@@ -98,7 +98,7 @@ OR
           const ret = {
             topics: topic.topicTitle,
             path: path,
-            title: topic.topicSlug.replace("-", " "),
+            title: topic.topicSlug.replaceAll("-", " "),
             description: topic.description,
             subTopics: children
           };
