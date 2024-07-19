@@ -3,7 +3,7 @@ var router = express.Router();
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('db/db.db');
 const dbController = require('../controllers/dbController');
-// const marked = require('marked');
+var showdown  = require('showdown')
 
 
 // Handle the root path separately
@@ -22,7 +22,10 @@ router.get('*', async function(req, res, next) {
   }
 
   try {
-    const article = await dbController.getArticleBySlug(db, slug);
+    var article = await dbController.getArticleBySlug(db, slug);
+
+    converter = new showdown.Converter();
+    article.content = converter.makeHtml(article.content);
     if (article) {
     	console.log(article)
       res.render('article', { article });
