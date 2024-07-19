@@ -30,7 +30,7 @@ router.get('*', async function(req, res, next) {
     article.content = converter.makeHtml(article.content);
     if (article) {
     	console.log(article)
-      res.render('article', { article });
+      res.render('article', { req, article });
     } 
 
     // else {

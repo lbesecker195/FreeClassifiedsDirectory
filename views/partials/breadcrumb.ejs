@@ -1,15 +1,20 @@
 <%
-	const slugs = path.split('/').filter(Boolean); // filter(Boolean) removes any empty elements
-	const breadcrumbs = slugs.map((slug, index) => {
-	    const partialPath = '/' + slugs.slice(0, index + 1).join('/');
-	    const text = slug.replace(/-/g, ' '); // Assuming the slugs are hyphen-separated words, converting them to spaces for more readable text
-	    return { text: text.charAt(0).toUpperCase() + text.slice(1), path: partialPath }; // Capitalize the first letter of the text
-	});
-		return breadcrumbs;
-	};
+function generateBreadcrumbs(urlPath) {
+  const parts = urlPath.split('/').filter(Boolean);
+  const breadcrumbs = [{ text: "Home", path: "/" }];
+  
+  for (let i = 0; i < parts.length - 1; i++) {
+    const text = parts[i].replace(/-/g, ' ');
+    const path = '/' + parts.slice(0, i + 1).join('/');
+    breadcrumbs.push({ text, path });
+  }
+
+  return breadcrumbs;
+}
 %>
 
-<a href="/">Free Classifieds Directory</a> 
-<% breadcrumbs.forEach(b => { %>
-<a href="<%= b.path %>"><%= article.title %></a>
+<!-- <a href="/">Free Classifieds Directory</a>  -->
+<% generateBreadcrumbs(req.path).forEach((b, i, arr) => { %>
+	<a href="<%= b.path %>"><%= b.text %></a>
+	<% if (i < arr.length - 1) { %><span>|</span><% } %>
 <% }) %>
