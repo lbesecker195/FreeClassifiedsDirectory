@@ -3,3 +3,4 @@ OLD_node_modules
 node_modules/*
 OLD_node_modules/*
 node_modules/.
+.DS_Store
