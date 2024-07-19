@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spcss@0.9.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spcss@0.9.0">
+
+	<% var env = process.env.NODE_ENV || 'development';
+		if (env == "production") { %>
+			<!-- Google tag (gtag.js) -->
+			<script async src="https://www.googletagmanager.com/gtag/js?id=G-533FBFZX79"></script>
+			<script>
+			  window.dataLayer = window.dataLayer || [];
+			  function gtag(){dataLayer.push(arguments);}
+			  gtag('js', new Date());
+
+			  gtag('config', 'G-533FBFZX79');
+			</script>
+			<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3179395830180221" crossorigin="anonymous"></script>
+     	<% } else { %>
+	     	not in production, in <%= env %>
+     	<% } %>
 </head>
 <body>
