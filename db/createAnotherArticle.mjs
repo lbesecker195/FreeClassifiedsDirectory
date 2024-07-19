@@ -6,28 +6,48 @@ import createArticleGPT from '../controllers/misc/createArticleGPT.mjs';
 import sqlite3 from 'sqlite3';
 const db = new sqlite3.Database('db.db')
 
-// Function to insert articles into the database
-const insertArticles = (db, article) => {
-  return new Promise((resolve, reject) => {
-    db.run(
-      'INSERT INTO articles (slug, content, title, description) VALUES (?, ?, ?, ?);',
-      [article.slug, article.content, article.title, article.description],
-      function(err) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      }
-    );
-  });
-};
+// // Function to insert articles into the database
+// const insertArticles = (db, article) => {
+//   return new Promise((resolve, reject) => {
+//     db.run(
+//       'INSERT INTO articles (slug, content, title, description) VALUES (?, ?, ?, ?);',
+//       [article.slug, article.content, article.title, article.description],
+//       function(err) {
+//         if (err) {
+//           reject(err);
+//         } else {
+//           resolve();
+//         }
+//       }
+//     );
+//   });
+// };
 
 // Function to retrieve a parent topic that doesn't have an associated article
 const getParentTopicWithoutArticle = (db) => {
   return new Promise((resolve, reject) => {
     // db.get('SELECT * FROM topics LIMIT 1;', [], (err, row) => {
     db.get('SELECT t.* FROM topics t LEFT JOIN articles a ON t.slug = a.slug WHERE t.parentSlug IS NULL AND a.slug IS NULL LIMIT 1;', [], (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+};
+
+const getSubtopicWithParentArticle = (db) => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT subtopics.*
+      FROM topics subtopics
+      JOIN topics parents ON subtopics.parentSlug = parents.slug
+      JOIN articles parentArticles ON parents.slug = parentArticles.slug
+      WHERE subtopics.parentSlug IS NOT NULL 
+      LIMIT 1;
+    `;
+    db.get(query, [], (err, row) => {
       if (err) {
         reject(err);
       } else {
@@ -64,6 +84,7 @@ const insertArticle = (article) => {
 
 const main = async() => {
 	var topic = await getParentTopicWithoutArticle(db);
+	// var topic = await getSubtopicWithParentArticle(db);
 	console.log(topic);
 
 	// var slug = `Education-and-Training`
@@ -77,6 +98,9 @@ const main = async() => {
  //        description: description,
  //        content: content
  //    }
+
+
+
 
 	var ret = await createArticleGPT(topic.title)
 	ret.slug = topic.slug;
