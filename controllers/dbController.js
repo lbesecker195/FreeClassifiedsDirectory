@@ -86,11 +86,13 @@ OR
         const topics = rows.filter(row => !row.parentSlug);
         const subTopics = rows.filter(row => row.parentSlug);
 
-        // console.log(topics);
-        // console.log(subTopics);
+        console.log(`topics length: ${topics}`);
+        console.log(`subTopics length: ${subTopics}`);
 
         const buildTopicPath = (topic, parentPath = '') => {
-          const path = `${(parentPath && parentPath != "") ? `/${parentPath}` : ""}/${topic.topicSlug}`;
+          const path = `${(parentPath && parentPath != "") ? `${parentPath}` : ""}/${topic.topicSlug}`;
+          // const path = topic.path
+
           const children = subTopics
             .filter(subTopic => subTopic.parentSlug === topic.topicSlug)
             .map(subTopic => buildTopicPath(subTopic, path));

@@ -86,8 +86,8 @@ function processContent(str) {
 }
 
 // async function runPrompts(args) {
-async function createArticleGPT(keyword) {
-    var args = [keyword]
+async function createArticleGPT(topic) {
+    var args = [topic.title]
 
     console.log(args)
     // const prompts = [

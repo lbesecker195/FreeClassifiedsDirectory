@@ -15,13 +15,15 @@ router.get('/', async function(req, res, next) {
 
 // Wildcard route to catch all URLs
 router.get('*', async function(req, res, next) {
-  slug = req.path.substring(1); // Remove leading slash
+  slug = req.path.split('/').at(-1); // 	Remove leading slash
 
   if (slug == "") {
   	slug = "index"
   }
 
   try {
+  	console.log(`slug ${slug}`)
+
     var article = await dbController.getArticleBySlug(db, slug);
 
     converter = new showdown.Converter();

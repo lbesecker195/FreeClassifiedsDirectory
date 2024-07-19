@@ -757,7 +757,7 @@ var topics = [
 db.serialize(() => {
 	db.run('DROP TABLE topics;');
 	// db.run('CREATE TABLE IF NOT EXISTS topics (keyword TEXT, slug TEXT, parentSlug TEXT, title TEXT, description TEXT)');
-	db.run('CREATE TABLE IF NOT EXISTS topics (slug TEXT, parentSlug TEXT, title TEXT, description TEXT)');
+	db.run('CREATE TABLE IF NOT EXISTS topics (slug TEXT, path TEXT, parentSlug TEXT, title TEXT, description TEXT)');
 })
 
 

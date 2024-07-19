@@ -1,2 +1,3 @@
 <a href="<%= t.path %>">%><h3><%= t.title %></h3></a>
 <p><%= t.description %></p>
+<%- include('indexSubTopicSection', { st: t.subTopics }) -%>

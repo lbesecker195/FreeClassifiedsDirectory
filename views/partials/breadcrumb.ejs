@@ -1,0 +1,15 @@
+<%
+	const slugs = path.split('/').filter(Boolean); // filter(Boolean) removes any empty elements
+	const breadcrumbs = slugs.map((slug, index) => {
+	    const partialPath = '/' + slugs.slice(0, index + 1).join('/');
+	    const text = slug.replace(/-/g, ' '); // Assuming the slugs are hyphen-separated words, converting them to spaces for more readable text
+	    return { text: text.charAt(0).toUpperCase() + text.slice(1), path: partialPath }; // Capitalize the first letter of the text
+	});
+		return breadcrumbs;
+	};
+%>
+
+<a href="/">Free Classifieds Directory</a> 
+<% breadcrumbs.forEach(b => { %>
+<a href="<%= b.path %>"><%= article.title %></a>
+<% }) %>

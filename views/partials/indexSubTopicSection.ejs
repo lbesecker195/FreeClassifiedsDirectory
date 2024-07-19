@@ -1,0 +1,7 @@
+<% if(st && st.length > 0) { %>
+	<ul>
+	<% st.forEach(t => { %>
+		<li><a href="<%= t.path %>"><%= t.title %></a></li>
+	<% }); %>
+	</ul>
+<% } %>
