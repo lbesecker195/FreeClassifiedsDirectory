@@ -5,6 +5,18 @@ const db = new sqlite3.Database('db/db.db');
 const dbController = require('../controllers/dbController');
 var showdown  = require('showdown')
 
+router.get('/favicon.ico', (req, res) => res.status(204));
+
+router.get('/sitemap.xml', async function(req, res, next) {
+  var rows = await dbController.getPathsForArticles(db);  
+  var paths = rows.map(r => r.path);
+  
+  console.log(paths)
+  
+  res.type('application/xml');
+  res.render('sitemap', {paths: paths});
+});
+
 
 // Handle the root path separately
 router.get('/', async function(req, res, next) {
@@ -25,11 +37,17 @@ router.get('*', async function(req, res, next) {
   	console.log(`slug ${slug}`)
 
     var article = await dbController.getArticleBySlug(db, slug);
+    // var topic = await dbController.getTopicBySlug(db, article.slug);
+    // var subTopics = await dbController.getTopicsWithArticles(db, topic.slug);
+
+    // console.log(`topic: ${JSON.stringify(topic)}`)
+    // console.log(`subTopics: ${subTopics}`)
 
     converter = new showdown.Converter();
     article.content = converter.makeHtml(article.content);
     if (article) {
     	console.log(article)
+      // res.render('article', { req, article, topic, st: subTopics });
       res.render('article', { req, article });
     } 
 

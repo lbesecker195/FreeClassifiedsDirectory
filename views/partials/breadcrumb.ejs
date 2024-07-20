@@ -1,7 +1,7 @@
 <%
 function generateBreadcrumbs(urlPath) {
   const parts = urlPath.split('/').filter(Boolean);
-  const breadcrumbs = [{ text: "Home", path: "/" }];
+  var breadcrumbs = [{ text: "Free Classifieds Directory", path: "/" }];
   
   for (let i = 0; i < parts.length - 1; i++) {
     const text = parts[i].replace(/-/g, ' ');
