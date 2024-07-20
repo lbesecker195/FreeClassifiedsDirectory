@@ -1,27 +1,6 @@
-// const sqlite3 = require('sqlite3').verbose()
-// const db = new sqlite3.Database('db.db')
-// const createArticleGPT = require('../controllers/misc/createArticleGPT.mjs')
-
 import createArticleGPT from '../controllers/misc/createArticleGPT.mjs';
 import sqlite3 from 'sqlite3';
 const db = new sqlite3.Database('db.db')
-
-// // Function to insert articles into the database
-// const insertArticles = (db, article) => {
-//   return new Promise((resolve, reject) => {
-//     db.run(
-//       'INSERT INTO articles (slug, content, title, description) VALUES (?, ?, ?, ?);',
-//       [article.slug, article.content, article.title, article.description],
-//       function(err) {
-//         if (err) {
-//           reject(err);
-//         } else {
-//           resolve();
-//         }
-//       }
-//     );
-//   });
-// };
 
 // Function to retrieve a parent topic that doesn't have an associated article
 const getParentTopicWithoutArticle = (db) => {
@@ -39,6 +18,17 @@ const getParentTopicWithoutArticle = (db) => {
 
 const getSubtopicWithParentArticle = (db) => {
   return new Promise((resolve, reject) => {
+//     const query = `
+// SELECT subtopics.*, parents.rowid
+// FROM topics subtopics
+// JOIN topics parents ON subtopics.parentSlug = parents.slug
+// JOIN articles parentArticles ON parents.slug = parentArticles.slug
+// LEFT JOIN articles childArticles ON subtopics.slug = childArticles.slug
+// WHERE subtopics.parentSlug IS NOT NULL 
+// AND childArticles.slug IS NULL
+// ORDER BY parents.rowid DESC
+// LIMIT 1;
+//     `;
     const query = `
 SELECT subtopics.*, parents.rowid
 FROM topics subtopics
@@ -47,7 +37,7 @@ JOIN articles parentArticles ON parents.slug = parentArticles.slug
 LEFT JOIN articles childArticles ON subtopics.slug = childArticles.slug
 WHERE subtopics.parentSlug IS NOT NULL 
 AND childArticles.slug IS NULL
-ORDER BY parents.rowid DESC
+ORDER BY RANDOM()
 LIMIT 1;
     `;
     db.get(query, [], (err, row) => {

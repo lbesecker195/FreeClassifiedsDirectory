@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<% if (typeof article !== 'undefined') { %>
+		<title><%= article.title %></title>
+		<meta name="description" content="<%= article.description %>">
+	<% } %>
+
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spcss@0.9.0">
 
 	<% 
