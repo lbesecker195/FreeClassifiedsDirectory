@@ -4,6 +4,10 @@
 
 <h1><a href=""><%= article.title %></a></h1>
 
+<%- article.blurb -%>
+
+<%- include('partials/indexSubTopicSection.ejs', { st: subTopics } %>
+
 <%- article.content -%>
 
 <%- include('partials/belowContentHTML') -%>
