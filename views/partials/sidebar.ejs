@@ -1,12 +1,46 @@
 <h4>Related Links</h4>
+
+<% 
+function isSet(x) {
+	return typeof x !== null && x != null && x != "" && x != [] && x != {};
+}
+ %>
+
 <%
-	topic.slug.replaceAll("-", " ")
+	function getPath(topic, csc) {
+		var city = csc.city.trim().replaceAll(" ", "-").replaceAll("/", "-");
+		var state = csc.state.trim().replaceAll(" ", "-")
+		var country = csc.country.trim().replaceAll(" ", "-")
+
+		// We currently only have `/:main-topic/in/:city/:state/:country' articles, not ones for `sub-topic`
+		if (isSet(topic)) {
+			var slug = topic.slug;
+
+			if (isSet(topic.parentSlug)) {
+				slug = topic.parentSlug;
+			}
+
+			return `/${slug}/in/${city}/${state}/${country}`
+		}
+		else {
+			throw(err)
+		}
+	}
+
 %>
-<% if(cityStateCountryCombos !== undefined && cityStateCountryCombos.length > 1) { %>
+<% if(cityStateCountryCombos !== undefined && cityStateCountryCombos.length > 1) { 
+	console.log(`cityStateCountryCombos: ${JSON.stringify(cityStateCountryCombos)}`)
+	%>
 <h3><%= topic.slug.replaceAll("-", " ") %> in</h3>
 <ul>
-	<% cityStateCountryCombos.forEach(csc => { %>
-		<li><a href="<%= `in/${csc.city}/${csc.state}/${csc.country}` %>"><%= csc.city %></a></li>
-	<% }) %>
-
-<% } %>
+	<% 
+	cityStateCountryCombos.forEach(csc => { 
+		try {
+	%>
+			<li><a href="<%= getPath(topic, csc) %>"><%= csc.city  %></a></li>
+	<% 
+		} catch(err) {
+			console.error(err)
+		}
+	}) 
+} %>

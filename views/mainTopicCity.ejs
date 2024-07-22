@@ -4,6 +4,10 @@ String.prototype.interpolate = function(params) {
   const vals = Object.values(params);
   return new Function(...names, `return \`${this}\`;`)(...vals);
 }
+
+function isSet(x) {
+	return typeof x !== null && x != null && x != "" && x != [] && x != {};
+}
 %>
 
 <%- include('partials/aboveContentHTML') -%>
@@ -21,8 +25,10 @@ String.prototype.interpolate = function(params) {
 <%- plainTextToHTML(topic.blurb).interpolate({city: cityStateCountry.city, state: cityStateCountry.state, country: cityStateCountry.country}) %>
 
 <% subTopics.forEach(t => { %>
-	<h2><%= t.slug.replaceAll("-", " ") %> in <%= cityStateCountry.city %></h2>
-	<%- plainTextToHTML(t.blurb).interpolate({city: cityStateCountry.city, state: cityStateCountry.state, country: cityStateCountry.country}) %>
+	<% if (isSet(t) && isSet(cityStateCountry) && isSet(t.slug) && isSet(cityStateCountry.city) && isSet(cityStateCountry.state) && isSet(cityStateCountry.country)) {%>
+		<h2><%= t.slug.replaceAll("-", " ") %> in <%= cityStateCountry.city %></h2>
+		<%- plainTextToHTML(t.blurb).interpolate({city: cityStateCountry.city, state: cityStateCountry.state, country: cityStateCountry.country}) %>
+	<% } %>
 <% }) %>
 
 <%= `topic: ${JSON.stringify(topic)}\ncityStateCountryCombos: ${JSON.stringify(cityStateCountryCombos)}`%>

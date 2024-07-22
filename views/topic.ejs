@@ -11,5 +11,5 @@
 <%- article.content -%>
 
 <% try { %>
-	<%- include('partials/belowContentHTML') -%>
+	<%- include('partials/belowContentHTML', {topic, cityStateCountryCombos}) -%>
 <% } catch(err){console.error(err)} %>

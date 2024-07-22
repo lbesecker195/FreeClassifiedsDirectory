@@ -4,10 +4,15 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('db/db.db');
 const dbController = require('../controllers/dbController');
 var showdown  = require('showdown')
+// var errorHandler = require('errorhandler');
 
-router.get('/favicon.ico', (req, res) => res.status(204));
+router.get('/favicon.ico', (req, res) => {
+  console.log("router.get('/favicon.ico', (req, res) => {");
+  res.status(204)
+});
 
 router.get('/sitemap.xml', async function(req, res, next) {
+  console.log("router.get('/sitemap.xml', async function(req, res, next) {");
   var rows = await dbController.getPathsForArticles(db);  
   var paths = rows.map(r => r.path);
   
@@ -18,7 +23,8 @@ router.get('/sitemap.xml', async function(req, res, next) {
 });
 
 // Handle the root path separately
-router.get('/', async function(req, res, next) {
+router.get(['', '/'], async function(req, res, next) {
+  console.log("router.get(['', '/'], async function(req, res, next) {");
 	var topics = await dbController.getTopicsWithArticles(db);
   // res.send(`path: "${req.path.substring(1)}"`);
   res.render('index', {topics: topics});
@@ -26,42 +32,51 @@ router.get('/', async function(req, res, next) {
 
 // Automatically 
 router.get('/:mainTopic/in/:city/:state/:country', async function(req, res, next) {
-  console.log(`path: ${req.path}`)
-  var city = req.params.city.replaceAll("-", " ");
-  var state = req.params.state.replaceAll("-", " ");
-  var country = req.params.country.replaceAll("-", " ");
+  console.log("router.get('/:mainTopic/in/:city/:state/:country', async function(req, res, next) {");
+  try {
+    console.log(`path: ${req.path}`)
+    console.log(`params: ${req.params}`)
+    var city = req.params.city.replaceAll("-", " ");
+    var state = req.params.state.replaceAll("-", " ");
+    var country = req.params.country.replaceAll("-", " ");
 
-  console.log(`params: ${JSON.stringify(req.params)}`)
-  var cityStateCountry = await dbController.getCityStateCountry(db, city, state, country)
-  console.log(`cityStateCountry: ${JSON.stringify(cityStateCountry)}`);
+    console.log(`params: ${JSON.stringify(req.params)}`)
+    var cityStateCountry = await dbController.getCityStateCountry(db, city, state, country)
+    console.log(`cityStateCountry: ${JSON.stringify(cityStateCountry)}`);
 
-  var cityStateCountryCombos = await dbController.getAllCityStateCountry(db);
+    var cityStateCountryCombos = await dbController.getAllCityStateCountry(db);
 
-  var topic = null;
-  var subTopics = null;
+    var topic = null;
+    var subTopics = null;
 
-  if (cityStateCountry) {
-    slug = req.path
-    console.log(`slug: ${slug}`)
-    slug = slug.split("/in")[0]
-    console.log(`slug: ${slug}`)
-    slug = slug.split("/")
-    console.log(`slug: ${slug}`)
-    slug = slug.at(-1);
-    console.log(`slug: ${slug}`)
+    if (cityStateCountry) {
+      slug = req.path
+      console.log(`slug: ${slug}`)
+      slug = slug.split("/in")[0]
+      console.log(`slug: ${slug}`)
+      slug = slug.split("/")
+      console.log(`slug: ${slug}`)
+      slug = slug.at(-1);
+      console.log(`slug: ${slug}`)
 
-    topic = await dbController.getTopicBySlug(db, slug);
-    console.log(`topic: ${JSON.stringify(topic)}`)
+      topic = await dbController.getTopicBySlug(db, slug);
+      console.log(`topic: ${JSON.stringify(topic)}`)
 
-    subTopics = await dbController.getSubTopicsByParentSlug(db, slug);
-    console.log(`subTopic: ${JSON.stringify(subTopics)}`)
+      subTopics = await dbController.getSubTopicsByParentSlug(db, slug);
+      console.log(`subTopic: ${JSON.stringify(subTopics)}`)
+    }
+
+    res.render('mainTopicCity', {req, cityStateCountry, cityStateCountryCombos, topic, subTopics});
+  } catch(err) {
+    next(err)
+    // res.redirect(`/`);
   }
-
-  res.render('mainTopicCity', {req, cityStateCountry, cityStateCountryCombos, topic, subTopics});
 })
 
 // Wildcard route to catch all URLs
-router.get('*', async function(req, res, next) {
+// router.get('*', async function(req, res, next) {
+router.get(['/:topic', '/:parentTopic/:topic'], async function(req, res, next) {
+  console.log("router.get(['/:topic', '/:parentTopic/:topic'], async function(req, res, next) {");
   slug = req.path.split('/').at(-1); // 	Remove leading slash
 
   try {
@@ -74,6 +89,7 @@ router.get('*', async function(req, res, next) {
 
 
   var cityStateCountryCombos = await dbController.getAllCityStateCountry(db);
+  console.log(`cityStateCountryCombos: ${JSON.stringify(cityStateCountryCombos)}`)
 
     var st = null;
 
@@ -116,9 +132,28 @@ router.get('*', async function(req, res, next) {
     // }
   } catch (error) {
     next(error);
+    // res.redirect(`/`);
   } finally {
 	// db.close();
   }
 });
+
+
+router.get('*', async function(req, res, next) {
+  console.log("router.get('*', async function(req, res, next) {");
+  res.redirect('/');
+});
+
+
+
+function handleError(err,req,res,next)
+{
+  // it's up to you how you handle the error, you can render an
+  // alternate view or redirect to an error view
+  if( err instanceof MyCustomError )
+     return res.redirect(301, 'error.html');
+
+   next(err);
+}
 
 module.exports = router;
