@@ -76,9 +76,13 @@ const insertArticle = (article) => {
 
 
 const main = async() => {
+  // Create an article based on a topic 
 	// var topic = await getParentTopicWithoutArticle(db);
-	var topic = await getSubtopicWithParentArticle(db);
-	console.log(topic);
+	// var topic = await getSubtopicWithParentArticle(db);
+	// console.log(topic);
+
+
+
 
 	// var slug = `Birthday-Party-Services`
 	// var path = `/Children-and-Family-Services/Birthday-Party-Services`
@@ -96,6 +100,13 @@ const main = async() => {
 
 
 
+ var title = "Auto Upholstery"
+
+ var topic = {
+   title: title,
+   slug: title.replaceAll(" ", "-"),
+   path: `/${title.replaceAll(" ", "-")}`
+ }
 
 	var ret = await createArticleGPT(topic)
 	ret.slug = topic.slug;

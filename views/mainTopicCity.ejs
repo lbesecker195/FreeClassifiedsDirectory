@@ -1,0 +1,28 @@
+<% 
+String.prototype.interpolate = function(params) {
+  const names = Object.keys(params);
+  const vals = Object.values(params);
+  return new Function(...names, `return \`${this}\`;`)(...vals);
+}
+%>
+
+<%- include('partials/aboveContentHTML') -%>
+
+<%- include('partials/breadcrumb') -%>
+
+<% 
+	function plainTextToHTML(text) {
+		return `<p>${text.replaceAll(/\n+/g, "</p><p>")}</p>`;
+	}
+%>
+
+<h1><a href=""><%= topic.slug.replaceAll("-", " ") %> in <%= cityStateCountry.city %>, <%= cityStateCountry.state %> <%= new Date().getFullYear() %></a></h1>
+
+<%- plainTextToHTML(topic.blurb).interpolate({city: cityStateCountry.city, state: cityStateCountry.state, country: cityStateCountry.country}) %>
+
+<% subTopics.forEach(t => { %>
+	<h2><%= t.slug.replaceAll("-", " ") %> in <%= cityStateCountry.city %></h2>
+	<%- plainTextToHTML(t.blurb).interpolate({city: cityStateCountry.city, state: cityStateCountry.state, country: cityStateCountry.country}) %>
+<% }) %>
+
+<%- include('partials/belowContentHTML') -%>

@@ -46,11 +46,6 @@ function mergeEverySoManyLines(input, separator = ' ') {
 
         // Iterate through the lines and merge every two consecutive lines
         for (let i = 0; i < lines.length;i += 1) {
-
-            // console.log(`j: ${j}\ni: ${i}\nnextMerge: ${nextMerge}\nlines.length: ${lines.length}\n---`)
-
-            // console.log(`i: ${i} | inc: ${inc}`)
-
             // Merrge lines if
             // - we don't overflow on the last line
             // - the paragraph won't be too big
@@ -60,7 +55,6 @@ function mergeEverySoManyLines(input, separator = ' ') {
             // if (i == nextMerge && i + 1 < lines.length && lines[i].length < 1300 && !lines[i].substring(10).contains("-") && !lines[i].substring(10).contains(/\d\./) && !lines[i].substring(10).contains(/#/) && !lines[i].substring(10).contains(/\*/)) {
             if (i == nextMerge && i + 1 < lines.length && lines[i].length < 1300) {
                 // If there is a next line, merge the current line with the next line
-                // console.log(`merging lines ${i} and ${i+1}`)
                 mergedLines.push(lines[i] + separator + lines[i + 1]);
             } else {
                 // If there is no next line, just push the current line as-is
@@ -111,31 +105,14 @@ async function createArticleGPT(topic) {
         let botResponseComplete = '';
         let continuationPrompt = '';
 
-        // while (true) {
-        //     try {
-                const response = await openai.chat.completions.create({
-                    model: "gpt-4o",
-                    messages,
-                    max_tokens: 4095,
-                });
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages,
+            max_tokens: 4095,
+        });
 
-                const botResponse = response.choices[0].message.content;
-                botResponseComplete += botResponse;
-
-        //         // Check if the response was truncated due to token limit
-        //         if (response.usage.total_tokens >= response.usage.completion_tokens) {
-        //             // Set continuation prompt to keep the conversation going
-        //             continuationPrompt = 'Please continue.';
-        //             messages = messages.concat({ role: 'assistant', content: botResponse }, { role: 'user', content: continuationPrompt });
-        //         } else {
-        //             // No truncation, break loop
-        //             break;
-        //         }
-        //     } catch (error) {
-        //         console.error('Error communicating with OpenAI:', error);
-        //         break;
-        //     }
-        // }
+        const botResponse = response.choices[0].message.content;
+        botResponseComplete += botResponse;
 
         // Store the complete response in the conversation history
         conversationHistory.push({ role: 'user', content: prompt });
@@ -174,17 +151,24 @@ async function createArticleGPT(topic) {
     }
 }
 
-// // Capture command line arguments
-// const args = process.argv.slice(2);
 
-// // Check if there are any prompts provided via command line
-// if (args.length === 0) {
-//     console.error('Please provide at least one prompt as a command line argument.');
-//     process.exit(1);
-// }
+const runManually = async () => {
+    // Capture command line arguments
+    const args = process.argv.slice(2);
+    console.log(args)
+    console.log(args[0])
 
-// // runPrompts(args);
-// createArticleGPT(args);
+    // Check if there are any prompts provided via command line
+    if (args.length === 0) {
+        console.error('Please provide at least one prompt as a command line argument.');
+        process.exit(1);
+    }
+
+    // runPrompts(args);
+    console.log(JSON.stringify(await createArticleGPT({title: args[0]})));
+}
+
+// runManually();
 
 
 

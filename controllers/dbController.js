@@ -15,8 +15,23 @@ const getArticleBySlug = (db, slug) => {
 // Function to query the database for a topic by slug
 const getTopicBySlug = (db, slug) => {
   console.log('getTopicBySlug');
+  console.log(`slug: ${slug}`)
   return new Promise((resolve, reject) => {
     db.get('SELECT * FROM topics WHERE slug = ?;', [slug], (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+};
+
+// Function to query the database for a topic by slug
+const getSubTopicsByParentSlug = (db, parentSlug) => {
+  console.log('getTopicBySlug');
+  return new Promise((resolve, reject) => {
+    db.all('SELECT * FROM topics WHERE parentSlug = ?;', [parentSlug], (err, row) => {
       if (err) {
         reject(err);
       } else {
@@ -158,6 +173,21 @@ const getPathsForArticles = (db) => {
   });
 };
 
+// Function to query the database for an article by slug
+const getCityStateCountry = (db, city, state, country) => {
+  console.log(`city: ${city}\nstate: ${state}\ncountry: ${country}`)
+  console.log('getArticleBySlug');
+  return new Promise((resolve, reject) => {
+    db.get('SELECT * FROM cityStateCountry WHERE city = ? AND state = ? AND country = ?;', [city, state, country], (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+};
+
 // const sqlite3 = require('sqlite3').verbose();
 // const db = new sqlite3.Database('../db/db.db');
 // // getTopicsWithArticles(db);
@@ -173,5 +203,7 @@ module.exports = {
   getTopicBySlug,
   getParentTopic,
   getTopicsWithArticles,
-  getPathsForArticles
+  getPathsForArticles,
+  getSubTopicsByParentSlug,
+  getCityStateCountry
 };

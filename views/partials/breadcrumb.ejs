@@ -3,7 +3,8 @@ function generateBreadcrumbs(urlPath) {
   const parts = urlPath.split('/').filter(Boolean);
   var breadcrumbs = [{ text: "Free Classifieds Directory", path: "/" }];
   
-  for (let i = 0; i < parts.length - 1; i++) {
+  // for (let i = 0; i < parts.length - 1; i++) {
+  for (let i = 0; i < parts.length - 1 && i < 1; i++) {
     const text = parts[i].replace(/-/g, ' ');
     const path = '/' + parts.slice(0, i + 1).join('/');
     breadcrumbs.push({ text, path });
@@ -13,8 +14,13 @@ function generateBreadcrumbs(urlPath) {
 }
 %>
 
-<!-- <a href="/">Free Classifieds Directory</a>  -->
-<% generateBreadcrumbs(req.path).forEach((b, i, arr) => { %>
-	<a href="<%= b.path %>"><%= b.text %></a>
-	<% if (i < arr.length - 1) { %><span>|</span><% } %>
-<% }) %>
+<% if (req.path) { %>
+  <!-- <a href="/">Free Classifieds Directory</a>  -->
+  <% generateBreadcrumbs(req.path).forEach((b, i, arr) => { %>
+  	<a href="<%= b.path %>"><%= b.text %></a>
+  	<% if (i < arr.length - 1) { %><span>|</span><% } %>
+  <% }) %>
+
+<% } else { %>
+  <a href="/">Free Classifieds Directory</a>
+<% } %>
