@@ -35,6 +35,8 @@ router.get('/:mainTopic/in/:city/:state/:country', async function(req, res, next
   var cityStateCountry = await dbController.getCityStateCountry(db, city, state, country)
   console.log(`cityStateCountry: ${JSON.stringify(cityStateCountry)}`);
 
+  var cityStateCountryCombos = await dbController.getAllCityStateCountry(db);
+
   var topic = null;
   var subTopics = null;
 
@@ -55,7 +57,7 @@ router.get('/:mainTopic/in/:city/:state/:country', async function(req, res, next
     console.log(`subTopic: ${JSON.stringify(subTopics)}`)
   }
 
-  res.render('mainTopicCity', {req, cityStateCountry, topic, subTopics});
+  res.render('mainTopicCity', {req, cityStateCountry, cityStateCountryCombos, topic, subTopics});
 })
 
 // Wildcard route to catch all URLs
@@ -69,6 +71,9 @@ router.get('*', async function(req, res, next) {
 
     var topic = await dbController.getTopicBySlug(db, article.slug);
     console.log(`topic: ${JSON.stringify(topic)}`)
+
+
+  var cityStateCountryCombos = await dbController.getAllCityStateCountry(db);
 
     var st = null;
 
@@ -94,7 +99,7 @@ router.get('*', async function(req, res, next) {
     	console.log(article)
       console.log(req.path)
       // res.render('article', { req, article, topic, st: subTopics });
-      res.render('topic', { req, article, st });
+      res.render('topic', { topic, cityStateCountryCombos, req, article, st });
     } 
 
     // else {

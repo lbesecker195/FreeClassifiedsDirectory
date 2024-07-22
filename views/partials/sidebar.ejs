@@ -1,0 +1,12 @@
+<h4>Related Links</h4>
+<%
+	topic.slug.replaceAll("-", " ")
+%>
+<% if(cityStateCountryCombos !== undefined && cityStateCountryCombos.length > 1) { %>
+<h3><%= topic.slug.replaceAll("-", " ") %> in</h3>
+<ul>
+	<% cityStateCountryCombos.forEach(csc => { %>
+		<li><a href="<%= `in/${csc.city}/${csc.state}/${csc.country}` %>"><%= csc.city %></a></li>
+	<% }) %>
+
+<% } %>

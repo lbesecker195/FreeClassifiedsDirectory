@@ -7,6 +7,7 @@
 	<% } %>
 
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spcss@0.9.0">
+	<link rel="stylesheet" href="/stylesheets/style.css">
 
 	<% 
 		console.log(process.env.NODE_ENV)
@@ -23,7 +24,10 @@
 			</script>
 			<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3179395830180221" crossorigin="anonymous"></script>
      	<% } else { %>
-	     	not in production, in <%= env %>
+	     	<!-- not in production, in <%= env %> -->
      	<% } %>
 </head>
 <body>
+	<div class="left-col">
+	</div>
+	<div class="content">

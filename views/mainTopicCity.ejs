@@ -25,4 +25,5 @@ String.prototype.interpolate = function(params) {
 	<%- plainTextToHTML(t.blurb).interpolate({city: cityStateCountry.city, state: cityStateCountry.state, country: cityStateCountry.country}) %>
 <% }) %>
 
-<%- include('partials/belowContentHTML') -%>
+<%= `topic: ${JSON.stringify(topic)}\ncityStateCountryCombos: ${JSON.stringify(cityStateCountryCombos)}`%>
+<%- include('partials/belowContentHTML', {topic, cityStateCountryCombos}) -%>

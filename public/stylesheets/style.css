@@ -1,8 +1,21 @@
 body {
+  display: flex;
+  flex-direction: row;
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  max-width: 100em;
 }
 
 a {
   color: #00B7FF;
+}
+
+div.left-col
+div.right-col {
+	flex: 1;
+}
+
+div.content {
+	flex: 3;
+  	max-width: 60em;
 }

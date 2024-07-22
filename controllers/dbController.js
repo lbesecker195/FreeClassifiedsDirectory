@@ -188,6 +188,21 @@ const getCityStateCountry = (db, city, state, country) => {
   });
 };
 
+// Function to query the database for an article by slug
+const getAllCityStateCountry = (db, city, state, country) => {
+  console.log(`city: ${city}\nstate: ${state}\ncountry: ${country}`)
+  console.log('getArticleBySlug');
+  return new Promise((resolve, reject) => {
+    db.all('SELECT * FROM cityStateCountry;', [city, state, country], (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+};
+
 // const sqlite3 = require('sqlite3').verbose();
 // const db = new sqlite3.Database('../db/db.db');
 // // getTopicsWithArticles(db);
@@ -205,5 +220,6 @@ module.exports = {
   getTopicsWithArticles,
   getPathsForArticles,
   getSubTopicsByParentSlug,
-  getCityStateCountry
+  getCityStateCountry,
+  getAllCityStateCountry
 };

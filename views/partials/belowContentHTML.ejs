@@ -1,2 +1,9 @@
+</div>
+<div class="right-col">
+	<% try { %>
+		<%- include('sidebar', {topic, cityStateCountryCombos}) %>
+	<% } catch(err) {console.error(err)} %>
+	</div>
+
 </body>
 </html>

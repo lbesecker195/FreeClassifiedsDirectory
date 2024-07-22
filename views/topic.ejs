@@ -10,4 +10,6 @@
 
 <%- article.content -%>
 
-<%- include('partials/belowContentHTML') -%>
+<% try { %>
+	<%- include('partials/belowContentHTML') -%>
+<% } catch(err){console.error(err)} %>
