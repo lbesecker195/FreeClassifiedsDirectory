@@ -2,12 +2,39 @@
 String.prototype.interpolate = function(params) {
   const names = Object.keys(params);
   const vals = Object.values(params);
-  return new Function(...names, `return \`${this}\`;`)(...vals);
+  return new Function(...names, `return \`${this}\``)(...vals);
 }
 
 function isSet(x) {
 	return typeof x !== null && x != null && x != "" && x != [] && x != {};
 }
+
+function createTitleFromSlug(slug, cityStateCountry) {
+	return `${slug.replaceAll("-", " ")} in ${cityStateCountry.city}, ${cityStateCountry.state} ${new Date().getFullYear()}`
+}
+
+function formatBlurb(topic, cityStateCountry) {
+	var formattedBlurb = "";
+	if (isSet(cityStateCountry) && isSet(cityStateCountry.city) && isSet(cityStateCountry.state) && isSet(cityStateCountry.country)) {
+		if (isSet(topic.blurb)) {
+			var blurb = topic.blurb;
+
+			if (isSet(blurb)) {
+				pre = `<strong>${createTitleFromSlug(topic.slug, cityStateCountry)}</strong>: `
+				formattedBlurb += plainTextToHTML(blurb, pre).interpolate({city: cityStateCountry.city, state: cityStateCountry.state, country: cityStateCountry.country})
+				return formattedBlurb
+			}	
+		} else {
+			var blurb = topic.description;
+
+			pre = `<strong>${createTitleFromSlug(topic.slug, cityStateCountry)}</strong>: `
+			formattedBlurb += plainTextToHTML(blurb, pre).interpolate({city: cityStateCountry.city, state: cityStateCountry.state, country: cityStateCountry.country})
+			return formattedBlurb;
+		}
+	}
+	return ""
+}
+
 %>
 
 <%- include('partials/aboveContentHTML') -%>
@@ -15,21 +42,25 @@ function isSet(x) {
 <%- include('partials/breadcrumb') -%>
 
 <% 
-	function plainTextToHTML(text) {
-		return `<p>${text.replaceAll(/\n+/g, "</p><p>")}</p>`;
+	function plainTextToHTML(text, pre = "") {
+		return `<p>${pre}${text.replaceAll(/\n+/g, "</p><p>")}</p>`;
 	}
 %>
 
 <h1><a href=""><%= topic.slug.replaceAll("-", " ") %> in <%= cityStateCountry.city %>, <%= cityStateCountry.state %> <%= new Date().getFullYear() %></a></h1>
 
-<%- plainTextToHTML(topic.blurb).interpolate({city: cityStateCountry.city, state: cityStateCountry.state, country: cityStateCountry.country}) %>
+<%- formatBlurb(topic, cityStateCountry) %>
 
-<% subTopics.forEach(t => { %>
-	<% if (isSet(t) && isSet(cityStateCountry) && isSet(t.slug) && isSet(cityStateCountry.city) && isSet(cityStateCountry.state) && isSet(cityStateCountry.country)) {%>
-		<h2><%= t.slug.replaceAll("-", " ") %> in <%= cityStateCountry.city %></h2>
-		<%- plainTextToHTML(t.blurb).interpolate({city: cityStateCountry.city, state: cityStateCountry.state, country: cityStateCountry.country}) %>
-	<% } %>
-<% }) %>
+<% try { %>
+	<% subTopics.filter(t => isSet(t) && isSet(t.slug) && isSet(t.blurb)).forEach(t => { %>
+			<%- formatBlurb(t, cityStateCountry) %>
+	<% }) %>
+	<% subTopics.filter(t => isSet(t) && isSet(t.slug) && !isSet(t.blurb)).forEach(t => { %>
+			<%- formatBlurb(t, cityStateCountry) %>
+	<% }) %>
+
+<% } catch(err) {console.error(err)} %>
+
 
 <%= `topic: ${JSON.stringify(topic)}\ncityStateCountryCombos: ${JSON.stringify(cityStateCountryCombos)}`%>
 <%- include('partials/belowContentHTML', {topic, cityStateCountryCombos}) -%>
