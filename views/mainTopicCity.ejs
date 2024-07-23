@@ -61,6 +61,4 @@ function formatBlurb(topic, cityStateCountry) {
 
 <% } catch(err) {console.error(err)} %>
 
-
-<%= `topic: ${JSON.stringify(topic)}\ncityStateCountryCombos: ${JSON.stringify(cityStateCountryCombos)}`%>
 <%- include('partials/belowContentHTML', {topic, cityStateCountryCombos}) -%>
